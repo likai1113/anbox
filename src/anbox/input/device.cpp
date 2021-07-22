@@ -39,7 +39,7 @@ std::shared_ptr<Device> Device::create(
 
   // The socket is created with user permissions (e.g. rwx------),
   // which prevents the container from accessing it. Make sure it is writable.
-  ::chmod(path.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+  ::chmod(path.c_str(), 0777);
 
   return sp;
 }
@@ -80,6 +80,7 @@ void Device::send_events(const std::vector<Event> &events) {
   }
 
   for (unsigned n = 0; n < connections_->size(); n++) {
+    INFO("send input event: %d", n);
     connections_->at(n)->send(reinterpret_cast<const char *>(data),
                               events.size() * sizeof(struct CompatEvent));
   }

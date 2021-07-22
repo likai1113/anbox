@@ -68,7 +68,7 @@ void logger_write(const emugl::LogLevel &level, const char *format, ...) {
 namespace anbox::graphics {
 GLRendererServer::GLRendererServer(const Config &config, const std::shared_ptr<wm::Manager> &wm)
     : renderer_(std::make_shared<::Renderer>()) {
-
+  INFO("GLRendererServer");
   std::shared_ptr<LayerComposer::Strategy> composer_strategy;
   if (config.single_window)
     composer_strategy = std::make_shared<SingleWindowComposerStrategy>(wm);
@@ -99,7 +99,7 @@ GLRendererServer::GLRendererServer(const Config &config, const std::shared_ptr<w
 
   if (!emugl::initialize(gl_libs, &log_funcs, nullptr))
     BOOST_THROW_EXCEPTION(std::runtime_error("Failed to initialize OpenGL renderer"));
-
+  INFO("begin renderer initialize");
   renderer_->initialize(0);
 
   registerRenderer(renderer_);

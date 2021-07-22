@@ -180,6 +180,7 @@ static EGLint rcChooseConfig(EGLint *attribs, uint32_t attribs_size,
 }
 
 static EGLint rcGetFBParam(EGLint param) {
+  INFO("rcGetFBParam: %d", param);
   if (!renderer)
     return 0;
 
@@ -377,6 +378,7 @@ int rcGetNumDisplays() {
 }
 
 int rcGetDisplayWidth(uint32_t display_id) {
+  INFO("rcGetDisplayWidth, display_id= %d", display_id);
   (void)display_id;
   return static_cast<int>(anbox::graphics::emugl::DisplayInfo::get()->vertical_resolution());
 }

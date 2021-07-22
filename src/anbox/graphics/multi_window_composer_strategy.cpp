@@ -18,11 +18,14 @@
 #include "anbox/graphics/multi_window_composer_strategy.h"
 #include "anbox/wm/manager.h"
 #include "anbox/utils.h"
+#include "anbox/logger.h"
+
 
 namespace anbox::graphics {
 MultiWindowComposerStrategy::MultiWindowComposerStrategy(const std::shared_ptr<wm::Manager> &wm) : wm_(wm) {}
 
 std::map<std::shared_ptr<wm::Window>, RenderableList> MultiWindowComposerStrategy::process_layers(const RenderableList &renderables) {
+  //INFO("MultiWindowComposerStrategy process_layers");
   WindowRenderableList win_layers;
   for (const auto &renderable : renderables) {
     // Ignore all surfaces which are not meant for a task

@@ -133,6 +133,7 @@ anbox::cmds::SessionManager::SessionManager()
                       rootless_));
 
   action([this](const cli::Command::Context &) {
+    INFO("session manager start");
     auto trap = core::posix::trap_signals_for_process(
         {core::posix::Signal::sig_term, core::posix::Signal::sig_int});
     trap->signal_raised().connect([trap](const core::posix::Signal &signal) {
@@ -158,13 +159,14 @@ anbox::cmds::SessionManager::SessionManager()
     auto rt = Runtime::create();
     auto dispatcher = anbox::common::create_dispatcher_for_runtime(rt);
 
-    if (!standalone_) {
-      container_ = std::make_shared<container::Client>(rt);
-      container_->register_terminate_handler([&]() {
-        WARNING("Lost connection to container manager, terminating.");
-        trap->stop();
-      });
-    }
+    // if (!standalone_) {
+    //   INFO("create container client");
+    //   container_ = std::make_shared<container::Client>(rt);
+    //   container_->register_terminate_handler([&]() {
+    //     WARNING("Lost connection to container manager, terminating.");
+    //     trap->stop();
+    //   });
+    // }
 
     auto input_manager = std::make_shared<input::Manager>(rt);
     auto android_api_stub = std::make_shared<bridge::AndroidApiStub>();
@@ -196,11 +198,14 @@ anbox::cmds::SessionManager::SessionManager()
 
     auto app_db = std::make_shared<application::Database>();
 
+    INFO("start window manager");
     std::shared_ptr<wm::Manager> window_manager;
     bool using_single_window = false;
-    if (platform->supports_multi_window() && !single_window_)
+    if (platform->supports_multi_window() && !single_window_) {
+      INFO("multi_window");
       window_manager = std::make_shared<wm::MultiWindowManager>(platform, android_api_stub, app_db);
-    else {
+    } else {
+      INFO("single_window");
       window_manager = std::make_shared<wm::SingleWindowManager>(platform, display_frame, app_db);
       using_single_window = true;
     }
@@ -216,7 +221,9 @@ anbox::cmds::SessionManager::SessionManager()
     auto gl_server = std::make_shared<graphics::GLRendererServer>(renderer_config, window_manager);
 
     platform->set_window_manager(window_manager);
+    INFO("render");
     platform->set_renderer(gl_server->renderer());
+    INFO("window manager setup");
     window_manager->setup();
 
     auto app_manager = std::static_pointer_cast<application::Manager>(android_api_stub);
@@ -231,6 +238,7 @@ anbox::cmds::SessionManager::SessionManager()
     auto audio_server = std::make_shared<audio::Server>(rt, platform);
 
     const auto socket_path = SystemConfiguration::instance().socket_dir();
+    INFO("socket dir: %s", socket_path);
 
     auto sensors_state = std::make_shared<application::SensorsState>();
     std::stringstream disabled_sensors_stream(disabled_sensors_);
@@ -278,7 +286,7 @@ anbox::cmds::SessionManager::SessionManager()
                   sender, server, pending_calls);
             }));
 
-    container::Configuration container_configuration;
+    //container::Configuration container_configuration;
 
     // Instruct healthd to fake battery level as it may take it from other connected
     // devices like mouse or keyboard and will incorrectly show a system popup to
@@ -286,28 +294,28 @@ anbox::cmds::SessionManager::SessionManager()
     // input as focus is bound to the system popup exclusively.
     //
     // See https://github.com/anbox/anbox/issues/780 for further details.
-    container_configuration.extra_properties.push_back("ro.boot.fake_battery=1");
+    // container_configuration.extra_properties.push_back("ro.boot.fake_battery=1");
 
-    if (server_side_decoration_)
-      container_configuration.extra_properties.push_back("ro.anbox.no_decorations=1");
+    // if (server_side_decoration_)
+    //   container_configuration.extra_properties.push_back("ro.anbox.no_decorations=1");
 
-    if (!standalone_) {
-      container_configuration.bind_mounts = {
-          {qemu_pipe_connector->socket_file(), "/dev/qemu_pipe"},
-          {bridge_connector->socket_file(), "/dev/anbox_bridge"},
-          {audio_server->socket_file(), "/dev/anbox_audio"},
-          {SystemConfiguration::instance().input_device_dir(), "/dev/input"},
+    // if (!standalone_) {
+    //   container_configuration.bind_mounts = {
+    //       {qemu_pipe_connector->socket_file(), "/dev/qemu_pipe"},
+    //       {bridge_connector->socket_file(), "/dev/anbox_bridge"},
+    //       {audio_server->socket_file(), "/dev/anbox_audio"},
+    //       {SystemConfiguration::instance().input_device_dir(), "/dev/input"},
 
-      };
+    //   };
 
-      container_configuration.devices = {
-          {"/dev/fuse", {0666}},
-      };
+    //   container_configuration.devices = {
+    //       {"/dev/fuse", {0666}},
+    //   };
 
-      dispatcher->dispatch([&]() {
-        container_->start(container_configuration);
-      });
-    }
+    //   dispatcher->dispatch([&]() {
+    //     container_->start(container_configuration);
+    //   });
+    // }
 
     auto connection = use_system_dbus_
                           ? sdbus::createSystemBusConnection(dbus::interface::Service::name())

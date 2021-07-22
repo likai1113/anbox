@@ -36,7 +36,7 @@ std::unique_ptr<BinderDevice> BinderDevice::create(const std::string& path) {
 
 BinderDevice::BinderDevice(const std::string& path) :
     path_{path} {
-  if (::chmod(path.c_str(), 0666) < 0)
+  if (::chmod(path.c_str(), 0777) < 0)
     ERROR("Failed to change permissions of binder node %s: %s", path, std::strerror(errno));
 }
 

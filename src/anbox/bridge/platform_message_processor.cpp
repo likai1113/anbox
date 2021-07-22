@@ -40,6 +40,7 @@ void PlatformMessageProcessor::dispatch(rpc::Invocation const &invocation) {
 
 void PlatformMessageProcessor::process_event_sequence(
     const std::string &raw_events) {
+  INFO("process_event_sequence");
   anbox::protobuf::bridge::EventSequence seq;
   if (!seq.ParseFromString(raw_events)) {
     WARNING("Failed to parse events from raw string");

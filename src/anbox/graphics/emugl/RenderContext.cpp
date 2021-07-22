@@ -18,8 +18,12 @@
 
 #include "OpenGLESDispatch/EGLDispatch.h"
 
+#include "anbox/logger.h"
+
+
 RenderContext* RenderContext::create(EGLDisplay display, EGLConfig config,
                                      EGLContext sharedContext, bool isGl2) {
+  INFO("RenderContext create");
   const EGLint contextAttribs[] = {EGL_CONTEXT_CLIENT_VERSION, isGl2 ? 2 : 1,
                                    EGL_NONE};
   EGLContext context =

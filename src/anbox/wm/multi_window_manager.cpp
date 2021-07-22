@@ -27,14 +27,16 @@ namespace anbox::wm {
 MultiWindowManager::MultiWindowManager(const std::weak_ptr<platform::BasePlatform> &platform,
                                        const std::shared_ptr<bridge::AndroidApiStub> &android_api_stub,
                                        const std::shared_ptr<application::Database> &app_db)
-    : platform_(platform), android_api_stub_(android_api_stub), app_db_(app_db) {}
+    : platform_(platform), android_api_stub_(android_api_stub), app_db_(app_db) {
+      INFO("MultiWindowManager create");
+    }
 
 MultiWindowManager::~MultiWindowManager() {}
 
 void MultiWindowManager::apply_window_state_update(const WindowState::List &updated,
                                         const WindowState::List &removed) {
   std::lock_guard<std::mutex> l(mutex_);
-
+  INFO("apply_window_state_update");
   // Base on the update we get from the Android WindowManagerService we will
   // create different window instances with the properties supplied. Incoming
   // layer updates from SurfaceFlinger will be mapped later into those windows
@@ -43,11 +45,18 @@ void MultiWindowManager::apply_window_state_update(const WindowState::List &upda
   std::map<Task::Id, WindowState::List> task_updates;
 
   for (const auto &window : updated) {
+    INFO("window package_name: %s", window.package_name());
     // Ignore all windows which are not part of the freeform task stack
-    if (window.stack() != Stack::Id::Freeform) continue;
+    if (window.stack() != Stack::Id::Freeform) {
+      INFO("window stack not freeForm");
+      continue;
+    }
 
     // And also those which don't have a surface mapped at the moment
-    if (!window.has_surface()) continue;
+    if (!window.has_surface()) {
+      INFO("window not has surface");
+      continue;
+    }
 
     // If we know that task already we first collect all window updates
     // for it so we can apply all of them together.
@@ -58,15 +67,19 @@ void MultiWindowManager::apply_window_state_update(const WindowState::List &upda
         task_updates.insert({window.task(), {window}});
       else
         task_updates[window.task()].push_back(window);
+      INFO("windows continue");
       continue;
     }
 
     auto title = window.package_name();
+    INFO("package name: %s", title);
     auto app = app_db_->find_by_package(window.package_name());
     if (app.valid())
       title = app.name;
-
+    INFO("platform lock");
     if (auto p = platform_.lock()) {
+      INFO("create_window: %s", title);
+      INFO("create_window: width: %d, height: %d", window.frame().width(), window.frame().height());
       auto w = p->create_window(window.task(), window.frame(), title);
       if (w) {
         w->attach();
@@ -75,6 +88,8 @@ void MultiWindowManager::apply_window_state_update(const WindowState::List &upda
         // FIXME can we call this here safely or do we need to schedule the removal?
         remove_task(window.task());
       }
+    } else {
+      INFO("not create_window");
     }
   }
 

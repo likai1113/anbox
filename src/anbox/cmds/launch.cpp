@@ -57,6 +57,7 @@ static int redirect_to_null(int flags, int fd) {
 } // namespace
 
 bool anbox::cmds::Launch::launch_session_manager() {
+  INFO("launch_session_manager");
   std::vector<std::string> args = {"session-manager"};
   const auto should_force_software_rendering = utils::get_env_value("ANBOX_FORCE_SOFTWARE_RENDERING", "false");
   if (should_force_software_rendering == "true")
@@ -72,7 +73,7 @@ bool anbox::cmds::Launch::launch_session_manager() {
     ERROR("Can't find correct anbox executable to run. Found %s but does not exist", exe_path);
     return false;
   }
-
+  INFO("before fork");
   try {
     auto flags = core::posix::StandardStream::empty;
     auto child = core::posix::fork([&]() {
@@ -102,7 +103,7 @@ bool anbox::cmds::Launch::launch_session_manager() {
         ERROR("Failed to change current directory: %s", strerror(errno));
         return core::posix::exit::Status::failure;
       }
-
+      INFO("likai--->start: %s", exe_path);
       auto grandchild = core::posix::exec(exe_path, args, env, flags);
       grandchild.dont_kill_on_cleanup();
       return core::posix::exit::Status::success;
@@ -157,10 +158,14 @@ anbox::cmds::Launch::Launch()
       ERROR("$ anbox launch --package=org.anbox.appmgr --component=org.anbox.appmgr.AppViewActivity");
       return EXIT_FAILURE;
     }
-
+    INFO("launch action");
     auto bus_type = anbox::dbus::Bus::Type::Session;
-    if (use_system_dbus_)
+    if (use_system_dbus_) {
+      INFO("use system dbus");
       bus_type = anbox::dbus::Bus::Type::System;
+    } else {
+      INFO("not use system dbus");
+    }
     auto bus = std::make_shared<anbox::dbus::Bus>(bus_type);
 
     std::shared_ptr<ui::SplashScreen> ss;
@@ -191,8 +196,10 @@ anbox::cmds::Launch::Launch()
     ApplicationManagerClient client(*connection, dbus::interface::Service::name(), dbus::interface::Service::path());
     n = 0;
     while (n < max_session_mgr_wait_attempts) {
-      if (client.Ready())
+      if (client.Ready()) {
+        INFO("client ready");
         break;
+    }
 
       std::this_thread::sleep_for(session_mgr_wait_interval);
       n++;

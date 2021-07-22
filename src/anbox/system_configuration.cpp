@@ -28,18 +28,7 @@ namespace fs = boost::filesystem;
 
 namespace {
 static std::string runtime_dir() {
-  static std::string path;
-  if (path.empty()) {
-    const auto snap_user_common = anbox::utils::get_env_value("SNAP_USER_COMMON");
-    if (!snap_user_common.empty())
-      path = (fs::path(snap_user_common) / "runtime").string();
-    else {
-      path = anbox::utils::get_env_value("XDG_RUNTIME_DIR");
-      if (path.empty())
-        BOOST_THROW_EXCEPTION(std::runtime_error("No runtime directory specified"));
-    }
-  }
-  return path;
+  return anbox::utils::get_env_value("ANBOX_RUNTIME_DIR");
 }
 }
 

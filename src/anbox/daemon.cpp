@@ -46,7 +46,7 @@ Daemon::Daemon()
      .command(std::make_shared<cmds::WaitReady>())
      .command(std::make_shared<cmds::CheckFeatures>());
 
-  Log().Init(anbox::Logger::Severity::kWarning);
+  Log().Init(anbox::Logger::Severity::kDebug);
 
   const auto log_level = utils::get_env_value("ANBOX_LOG_LEVEL", "");
   if (!log_level.empty() && !Log().SetSeverityFromString(log_level))
@@ -54,6 +54,7 @@ Daemon::Daemon()
 }
 
 int Daemon::Run(const std::vector<std::string> &arguments) try {
+  INFO("Daemon start");
   auto argv = arguments;
   if (arguments.size() == 0) argv = {"help"};
   return cmd.run({std::cin, std::cout, argv});

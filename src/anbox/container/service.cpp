@@ -17,7 +17,7 @@
 
 #include "anbox/container/service.h"
 #include "anbox/system_configuration.h"
-#include "anbox/container/lxc_container.h"
+#include "anbox/container/docker_container.h"
 #include "anbox/container/management_api_message_processor.h"
 #include "anbox/container/management_api_skeleton.h"
 #include "anbox/logger.h"
@@ -85,12 +85,7 @@ void Service::new_client(std::shared_ptr<boost::asio::local::stream_protocol::so
   auto pending_calls = std::make_shared<rpc::PendingCallCache>();
   auto rpc_channel = std::make_shared<rpc::Channel>(pending_calls, messenger);
   auto server = std::make_shared<container::ManagementApiSkeleton>(
-      std::make_shared<LxcContainer>(config_.privileged,
-                                                    config_.rootfs_overlay,
-                                                    config_.container_network_address,
-                                                    config_.container_network_gateway,
-                                                    config_.container_network_dns_servers,
-                                                    messenger->creds()));
+      std::make_shared<DockerContainer>());
   auto processor = std::make_shared<container::ManagementApiMessageProcessor>(
       messenger, pending_calls, server);
 

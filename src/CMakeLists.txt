@@ -167,6 +167,8 @@ set(SOURCES
     anbox/container/container.h
     anbox/container/lxc_container.cpp
     anbox/container/lxc_container.h
+    anbox/container/docker_container.cpp
+    anbox/container/docker_container.h
     anbox/container/management_api_message_processor.cpp
     anbox/container/management_api_message_processor.h
     anbox/container/management_api_skeleton.cpp

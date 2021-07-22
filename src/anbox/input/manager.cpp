@@ -30,7 +30,7 @@ Manager::Manager(const std::shared_ptr<Runtime> &runtime) : runtime_(runtime) {
 
   // The directory is bind-mounted into the container but might have user
   // permissions only (rwx------). Make sure it is accessible.
-  ::chmod(dir.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+  ::chmod(dir.c_str(), 0777);
 }
 
 Manager::~Manager() {}

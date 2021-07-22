@@ -37,6 +37,7 @@ RenderThread::~RenderThread() {
 }
 
 RenderThread *RenderThread::create(const std::shared_ptr<Renderer> &renderer, IOStream *stream, std::mutex &m) {
+  INFO("RenderThread create");
   return new RenderThread(renderer, stream, m);
 }
 

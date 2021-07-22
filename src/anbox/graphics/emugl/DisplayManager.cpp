@@ -16,19 +16,29 @@
  */
 
 #include "DisplayManager.h"
+#include "anbox/logger.h"
+
 
 namespace anbox::graphics::emugl {
 std::shared_ptr<DisplayInfo> DisplayInfo::get() {
+  INFO("displayInfo get");
   static auto info = std::make_shared<DisplayInfo>();
   return info;
 }
 
 void DisplayInfo::set_resolution(const std::uint32_t &vertical, const std::uint32_t horizontal) {
+  INFO("set_resolution,vertical: %d, horizontal: %d", vertical, horizontal);
   vertical_resolution_ = vertical;
   horizontal_resolution_ = horizontal;
 }
 
-std::uint32_t DisplayInfo::vertical_resolution() const { return vertical_resolution_; }
+std::uint32_t DisplayInfo::vertical_resolution() const {
+  INFO("vertical_resolution: %d", vertical_resolution_);
+  return vertical_resolution_; 
+}
 
-std::uint32_t DisplayInfo::horizontal_resolution() const { return horizontal_resolution_; }
+std::uint32_t DisplayInfo::horizontal_resolution() const { 
+  INFO("horizontal_resolution: %d", horizontal_resolution_);
+  return horizontal_resolution_; 
+}
 }

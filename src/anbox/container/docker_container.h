@@ -15,35 +15,27 @@
  *
  */
 
-#ifndef ANBOX_PLATFORM_SDL_MIR_DISPLAY_CONNECTION_H_
-#define ANBOX_PLATFORM_SDL_MIR_DISPLAY_CONNECTION_H_
+#ifndef ANBOX_CONTAINER_DOCKER_CONTAINER_H_
+#define ANBOX_CONTAINER_DOCKER_CONTAINER_H_
 
-#define MIR_EGL_PLATFORM
+#include "anbox/container/container.h"
+#include "anbox/network/credentials.h"
 
-#include <mirclient/mir_toolkit/mir_client_library.h>
+#include <string>
+#include <vector>
 
-#include <EGL/egl.h>
 
-namespace anbox::sdl {
-class MirDisplayConnection {
+namespace anbox::container {
+class DockerContainer : public Container {
  public:
-  MirDisplayConnection();
-  ~MirDisplayConnection();
+  DockerContainer();
+  ~DockerContainer();
 
-  MirPixelFormat default_pixel_format() const;
-
-  MirConnection* connection() const;
-  EGLNativeDisplayType native_display() const;
-
-  int output_id() const;
-  int vertical_resolution() const;
-  int horizontal_resolution() const;
-
- private:
-  MirConnection* connection_;
-  int output_id_;
-  int vertical_resolution_;
-  int horizontal_resolution_;
+  void start(const Configuration &configuration) override;
+  void stop() override;
+  State state() override;
+private:
+  State state_;
 };
 }
 #endif

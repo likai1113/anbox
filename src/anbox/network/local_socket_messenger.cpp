@@ -31,6 +31,7 @@ LocalSocketMessenger::LocalSocketMessenger(const std::string &path,
                                            const std::shared_ptr<Runtime> &rt)
     : socket_(std::make_shared<boost::asio::local::stream_protocol::socket>(
           rt->service())) {
+  INFO("LocalSocketMessenger, path: %s", path);
   boost::system::error_code err;
   socket_->connect(boost::asio::local::stream_protocol::endpoint(path), err);
   if (err) {
@@ -38,7 +39,7 @@ LocalSocketMessenger::LocalSocketMessenger(const std::string &path,
                                           path, err.message());
     BOOST_THROW_EXCEPTION(std::runtime_error(msg));
   }
-
+  INFO("LocalSocket connected");
   setup(socket_);
 }
 

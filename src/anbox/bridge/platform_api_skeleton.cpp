@@ -75,6 +75,7 @@ void PlatformApiSkeleton::handle_boot_finished_event(const anbox::protobuf::brid
 }
 
 void PlatformApiSkeleton::handle_window_state_update_event(const anbox::protobuf::bridge::WindowStateUpdateEvent &event) {
+  INFO("handle_window_state_update_event");
   auto convert_window_state = [](
       const ::anbox::protobuf::bridge::WindowStateUpdateEvent_WindowState
           &window) {

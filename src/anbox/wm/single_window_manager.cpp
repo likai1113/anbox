@@ -28,7 +28,9 @@ namespace anbox::wm {
 SingleWindowManager::SingleWindowManager(const std::weak_ptr<platform::BasePlatform> &platform,
                                          const graphics::Rect &window_size,
                                          const std::shared_ptr<application::Database> &app_db)
-    : platform_(platform), window_size_(window_size), app_db_(app_db) {}
+    : platform_(platform), window_size_(window_size), app_db_(app_db) {
+      INFO("SingleWindowManager");
+    }
 
 SingleWindowManager::~SingleWindowManager() {}
 

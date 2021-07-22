@@ -60,6 +60,7 @@ void Client::register_terminate_handler(const TerminateCallback &callback) {
 }
 
 void Client::read_next_message() {
+  INFO("read_next_message");
   auto callback = std::bind(&Client::on_read_size, this, std::placeholders::_1,
                             std::placeholders::_2);
   messenger_->async_receive_msg(callback, ba::buffer(buffer_));

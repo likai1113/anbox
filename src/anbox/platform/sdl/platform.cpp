@@ -424,6 +424,7 @@ Window::Id Platform::next_window_id() {
 
 std::shared_ptr<wm::Window> Platform::create_window(
     const anbox::wm::Task::Id &task, const anbox::graphics::Rect &frame, const std::string &title) {
+  INFO("create_window: %s, width: %d, height: %d", title, frame.width(), frame.height());
   if (!renderer_) {
     ERROR("Can't create window without a renderer set");
     return nullptr;
@@ -437,6 +438,7 @@ std::shared_ptr<wm::Window> Platform::create_window(
   }
 
   auto id = next_window_id();
+  INFO("create_window id: %d", id);
   auto w = std::make_shared<Window>(renderer_, id, task, shared_from_this(), frame, title,
 		  !window_size_immutable_, !config_.server_side_decoration);
   focused_sdl_window_id_ = w->window_id();
