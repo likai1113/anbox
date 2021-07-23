@@ -118,8 +118,6 @@ set(SOURCES
     anbox/build/config.h
     anbox/build/config.h.in
 
-    anbox/cmds/container_manager.cpp
-    anbox/cmds/container_manager.h
     anbox/cmds/launch.cpp
     anbox/cmds/launch.h
     anbox/cmds/session_manager.cpp
@@ -159,24 +157,6 @@ set(SOURCES
     anbox/common/binder_device.h
     anbox/common/binder_device_allocator.cpp
     anbox/common/binder_device_allocator.h
-
-    anbox/container/client.cpp
-    anbox/container/client.h
-    anbox/container/configuration.h
-    anbox/container/container.cpp
-    anbox/container/container.h
-    anbox/container/lxc_container.cpp
-    anbox/container/lxc_container.h
-    anbox/container/docker_container.cpp
-    anbox/container/docker_container.h
-    anbox/container/management_api_message_processor.cpp
-    anbox/container/management_api_message_processor.h
-    anbox/container/management_api_skeleton.cpp
-    anbox/container/management_api_skeleton.h
-    anbox/container/management_api_stub.cpp
-    anbox/container/management_api_stub.h
-    anbox/container/service.cpp
-    anbox/container/service.h
 
     anbox/dbus/bus.cpp
     anbox/dbus/bus.h

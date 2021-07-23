@@ -34,7 +34,6 @@
 #include "anbox/bridge/platform_message_processor.h"
 #include "anbox/cmds/session_manager.h"
 #include "anbox/common/dispatcher.h"
-#include "anbox/container/client.h"
 #include "anbox/dbus/application_manager_server.h"
 #include "anbox/dbus/gps_server.h"
 #include "anbox/dbus/sensors_server.h"
@@ -286,37 +285,6 @@ anbox::cmds::SessionManager::SessionManager()
                   sender, server, pending_calls);
             }));
 
-    //container::Configuration container_configuration;
-
-    // Instruct healthd to fake battery level as it may take it from other connected
-    // devices like mouse or keyboard and will incorrectly show a system popup to
-    // shutdown the Android system because of low battery. This prevents any kind of
-    // input as focus is bound to the system popup exclusively.
-    //
-    // See https://github.com/anbox/anbox/issues/780 for further details.
-    // container_configuration.extra_properties.push_back("ro.boot.fake_battery=1");
-
-    // if (server_side_decoration_)
-    //   container_configuration.extra_properties.push_back("ro.anbox.no_decorations=1");
-
-    // if (!standalone_) {
-    //   container_configuration.bind_mounts = {
-    //       {qemu_pipe_connector->socket_file(), "/dev/qemu_pipe"},
-    //       {bridge_connector->socket_file(), "/dev/anbox_bridge"},
-    //       {audio_server->socket_file(), "/dev/anbox_audio"},
-    //       {SystemConfiguration::instance().input_device_dir(), "/dev/input"},
-
-    //   };
-
-    //   container_configuration.devices = {
-    //       {"/dev/fuse", {0666}},
-    //   };
-
-    //   dispatcher->dispatch([&]() {
-    //     container_->start(container_configuration);
-    //   });
-    // }
-
     auto connection = use_system_dbus_
                           ? sdbus::createSystemBusConnection(dbus::interface::Service::name())
                           : sdbus::createSessionBusConnection(dbus::interface::Service::name());
@@ -327,12 +295,6 @@ anbox::cmds::SessionManager::SessionManager()
 
     rt->start();
     trap->run();
-
-    if (!standalone_) {
-      // Stop the container which should close all open connections we have on
-      // our side and should terminate all services.
-      container_->stop();
-    }
 
     rt->stop();
 

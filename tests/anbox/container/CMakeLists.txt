@@ -1,1 +1,0 @@
-ANBOX_ADD_TEST(lxc_container_tests lxc_container_tests.cpp)

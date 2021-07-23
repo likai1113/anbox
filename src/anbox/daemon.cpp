@@ -22,7 +22,6 @@
 #include "anbox/daemon.h"
 #include "anbox/logger.h"
 
-#include "anbox/cmds/container_manager.h"
 #include "anbox/cmds/session_manager.h"
 #include "anbox/cmds/system_info.h"
 #include "anbox/cmds/launch.h"
@@ -41,7 +40,6 @@ Daemon::Daemon()
   cmd.command(std::make_shared<cmds::Version>())
      .command(std::make_shared<cmds::SessionManager>())
      .command(std::make_shared<cmds::Launch>())
-     .command(std::make_shared<cmds::ContainerManager>())
      .command(std::make_shared<cmds::SystemInfo>())
      .command(std::make_shared<cmds::WaitReady>())
      .command(std::make_shared<cmds::CheckFeatures>());
