@@ -149,6 +149,8 @@ anbox::cmds::SessionManager::SessionManager()
       ERROR("Failed to start as either binder or ashmem kernel drivers are not loaded");
       return EXIT_FAILURE;
     }
+    ::chmod("/dev/binder",0777);
+    ::chmod("/dev/ashmem",0777);
 
     utils::ensure_paths({
         SystemConfiguration::instance().socket_dir(),

@@ -27,6 +27,7 @@
 namespace anbox::input {
 std::shared_ptr<Device> Device::create(
     const std::string &path, const std::shared_ptr<Runtime> &runtime) {
+  INFO("device create: %s", path);
   auto sp = std::make_shared<Device>();
 
   auto delegate_connector = std::make_shared<
@@ -80,7 +81,7 @@ void Device::send_events(const std::vector<Event> &events) {
   }
 
   for (unsigned n = 0; n < connections_->size(); n++) {
-    INFO("send input event: %d", n);
+    //INFO("send input event: %d", n);
     connections_->at(n)->send(reinterpret_cast<const char *>(data),
                               events.size() * sizeof(struct CompatEvent));
   }

@@ -75,10 +75,11 @@ void PlatformApiSkeleton::handle_boot_finished_event(const anbox::protobuf::brid
 }
 
 void PlatformApiSkeleton::handle_window_state_update_event(const anbox::protobuf::bridge::WindowStateUpdateEvent &event) {
-  INFO("handle_window_state_update_event");
+  //INFO("handle_window_state_update_event");
   auto convert_window_state = [](
       const ::anbox::protobuf::bridge::WindowStateUpdateEvent_WindowState
           &window) {
+    //INFO("convert_window_state, window stack_id = %d", window.stack_id());
     return wm::WindowState(
         wm::Display::Id(window.display_id()), window.has_surface(),
         graphics::Rect(window.frame_left(), window.frame_top(),

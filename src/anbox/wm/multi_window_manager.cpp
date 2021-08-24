@@ -36,25 +36,26 @@ MultiWindowManager::~MultiWindowManager() {}
 void MultiWindowManager::apply_window_state_update(const WindowState::List &updated,
                                         const WindowState::List &removed) {
   std::lock_guard<std::mutex> l(mutex_);
-  INFO("apply_window_state_update");
+  //INFO("apply_window_state_update");
   // Base on the update we get from the Android WindowManagerService we will
   // create different window instances with the properties supplied. Incoming
   // layer updates from SurfaceFlinger will be mapped later into those windows
   // and eventually composited there via GLES (e.g. for popups, ..)
 
   std::map<Task::Id, WindowState::List> task_updates;
+  //INFO("update length: %d", sizeof(updated));
 
   for (const auto &window : updated) {
-    INFO("window package_name: %s", window.package_name());
+    //INFO("window task: %d, package_name: %s", window.stack(), window.package_name());
     // Ignore all windows which are not part of the freeform task stack
     if (window.stack() != Stack::Id::Freeform) {
-      INFO("window stack not freeForm");
+      //INFO("window stack not freeForm");
       continue;
     }
 
     // And also those which don't have a surface mapped at the moment
     if (!window.has_surface()) {
-      INFO("window not has surface");
+      //INFO("window not has surface");
       continue;
     }
 
@@ -62,24 +63,25 @@ void MultiWindowManager::apply_window_state_update(const WindowState::List &upda
     // for it so we can apply all of them together.
     auto w = windows_.find(window.task());
     if (w != windows_.end()) {
+      //INFO("window: %d is not end", window.task());
       auto t = task_updates.find(window.task());
       if (t == task_updates.end())
         task_updates.insert({window.task(), {window}});
       else
         task_updates[window.task()].push_back(window);
-      INFO("windows continue");
+      //INFO("windows continue");
       continue;
     }
 
     auto title = window.package_name();
-    INFO("package name: %s", title);
+    //INFO("package name: %s", title);
     auto app = app_db_->find_by_package(window.package_name());
     if (app.valid())
       title = app.name;
-    INFO("platform lock");
+    //INFO("platform lock");
     if (auto p = platform_.lock()) {
-      INFO("create_window: %s", title);
-      INFO("create_window: width: %d, height: %d", window.frame().width(), window.frame().height());
+      //INFO("create_window: %s", title);
+      //INFO("create_window: width: %d, height: %d", window.frame().width(), window.frame().height());
       auto w = p->create_window(window.task(), window.frame(), title);
       if (w) {
         w->attach();

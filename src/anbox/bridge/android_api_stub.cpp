@@ -65,7 +65,7 @@ void AndroidApiStub::launch(const android::Intent &intent,
     std::lock_guard<decltype(mutex_)> lock(mutex_);
     launch_wait_handle_.expect_result();
   }
-
+  INFO("AndroidApiStub launch: %d", stack);
   switch (stack) {
   case wm::Stack::Id::Default:
     message.set_stack(::anbox::protobuf::bridge::LaunchApplication_Stack_DEFAULT);

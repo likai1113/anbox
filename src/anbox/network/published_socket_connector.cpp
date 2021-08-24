@@ -29,6 +29,7 @@ PublishedSocketConnector::PublishedSocketConnector(
       runtime_(rt),
       connection_creator_(connection_creator),
       acceptor_(rt->service(), socket_file_) {
+  ::chmod(socket_file.c_str(),0777);
   start_accept();
 }
 
@@ -39,6 +40,7 @@ void PublishedSocketConnector::start_accept() {
 
   acceptor_.async_accept(*socket,
                          [this, socket](boost::system::error_code const& err) {
+                           //INFO("on new connection");
                            on_new_connection(socket, err);
                          });
 }

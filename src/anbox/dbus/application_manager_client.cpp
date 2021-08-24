@@ -33,6 +33,7 @@ bool ApplicationManagerClient::TryLaunch(anbox::android::Intent intent, anbox::w
       intentDict["type"] = sdbus::Variant(intent.type);
     if (intent.uri.length())
       intentDict["uri"] = sdbus::Variant(intent.uri);
+    DEBUG("launch_stack: %s", launch_stack.str());
     this->Launch(intentDict, launch_stack.str());
   } catch (const std::exception &err) {
     ERROR("Failed to launch activity: %s", err.what());

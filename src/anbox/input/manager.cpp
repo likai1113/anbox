@@ -20,6 +20,8 @@
 #include "anbox/input/device.h"
 #include "anbox/runtime.h"
 #include "anbox/utils.h"
+#include "anbox/logger.h"
+
 
 #include <boost/format.hpp>
 
@@ -38,6 +40,7 @@ Manager::~Manager() {}
 std::shared_ptr<Device> Manager::create_device() {
   const auto id = next_id();
   const auto path = build_device_path(id);
+  INFO("create_device,id = %d, path = %s", id, path);
   auto device = Device::create(path, runtime_);
   devices_.insert({id, device});
   return device;
